@@ -10,7 +10,7 @@
             <strong>{{ row.name }}</strong>
         </template>
         <template slot-scope="{ row, index }" slot="action">
-            <Button  size="small" style="margin-right: 5px" @click="show(index)">View</Button>
+            <Button  size="small" style="margin-right: 5px" to="/home/articlelst/addarticle">Edit</Button>
             <Button  size="small" @click="remove(index)">Delete</Button>
         </template>
     </Table>
@@ -135,14 +135,6 @@ export default {
             }
         },
         methods: {
-            show (index) {
-                this.$Modal.info({
-                    title: 'User Info',
-                    width: 800,
-                    height: 800,
-                    content: `Name：${this.data6[index].name}<br>Age：${this.data6[index].age}<br>Address：${this.data6[index].address}`
-                })
-            },
             remove (index) {
                 this.data6.splice(index, 1);
             }

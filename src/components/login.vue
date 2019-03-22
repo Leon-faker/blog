@@ -4,7 +4,7 @@
         <label><h2>FederikBlog</h2></label>
         <p><Input v-model="username" type="text" name="username" value="username" prefix="ios-contact" placeholder="Enter Username" style="width: auto" /></p>
         <p><Input v-model="password" type="password" name="username" value="password" prefix="ios-lock" placeholder="Enter Password" style="width: auto" /></p>
-        <p><Button @click="loginRequest()" style="width:49%" type="success">Login</Button></p>
+        <p><Button @click="loginRequest" @keyup.enter="loginRequest" style="width:49%" type="success">Login</Button></p>
     </div>
   </div>
 </template>
@@ -18,7 +18,19 @@ export default {
       password: ''
     }
   },
+  // vue 钩子,挂在Dom文档之前执行
+  created(){
+    this.keyupEnter()
+  },
   methods: {
+    keyupEnter(){
+        document.onkeydown = e =>{
+            let body = document.getElementsByTagName('body')[0]
+            if (e.keyCode === 13) {
+                this.loginRequest()
+            }
+        }
+    },
     jump () {
       this.$router.push({path: '/home'})
     },
