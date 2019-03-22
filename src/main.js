@@ -13,8 +13,6 @@ Vue.use(axios)
 Vue.config.productionTip = false
 Vue.prototype.$ajax = axios
 Vue.prototype.$qs = qs
-//解决415错误
-// axios.defaults.headers.post['Content-Type' = 'application/json']
 
 /* eslint-disable no-new */
 new Vue({
