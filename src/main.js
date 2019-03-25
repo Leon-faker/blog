@@ -13,6 +13,7 @@ Vue.use(axios)
 Vue.config.productionTip = false
 Vue.prototype.$ajax = axios
 Vue.prototype.$qs = qs
+axios.defaults.withCredentials = true
 
 /* eslint-disable no-new */
 new Vue({

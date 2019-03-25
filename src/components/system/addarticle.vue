@@ -21,7 +21,7 @@
     <br>
     <br>
     <template>
-      <mavon-editor></mavon-editor>
+      <mavon-editor v-model="articleContent"></mavon-editor>
     </template>
   </div>
 </template>
@@ -32,6 +32,10 @@ export default {
   name: 'addArticle',
   components: {
     mavonEditor
+  },
+  mounted () {
+    console.log("渲染前")
+    this.articleTypeAjax()
   },
   data () {
     return {
@@ -50,17 +54,60 @@ export default {
               label: 'Mysql'
           }
       ],
+      //文章类型
       articleTypeModel: '',
       //文章标题
-      articleTitle: ''
+      articleTitle: '',
+      //文章内容
+      articleContent: ''
     }
   },
   methods: {
+    articleTypeAjax () {
+      this.$ajax.get
+      (
+         'http://localhost:9000/articleType/findAll',
+         {
+           params: {
+             offset: 0,
+             limit: 10
+           }
+         },
+         {headers: {'Content-type': 'application/json;charset=UTF-8'}}
+      )
+      .then(function(res){
+          console.log(res);
+      }.bind(this))
+      .catch(function(res){
+          console.log(res)
+      })
+    },
     issue () {
-      console.log(this.articleTitle)
+      console.log(this.articleContent)
       if(this.articleTitle==""){
         this.$Message.info('主题不能为空');
+        return;
       }
+      this.ajax()
+    },
+    ajax () {
+      this.$ajax.post
+      (
+         'http://localhost:9000/article/addArticle',
+         JSON.stringify({
+            articleName: this.articleTitle,
+            articleTypeId: 1,
+            articleStatus: 0,
+            articleContent: this.articleContent
+         }),
+         {headers: {'Content-type': 'application/json;charset=UTF-8'}}
+      )
+      .then(function(res){
+          console.log(res);
+      }.bind(this))
+      .catch(function(res){
+          console.log(res)
+      })
     }
   }
 }
