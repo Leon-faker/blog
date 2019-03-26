@@ -13,11 +13,15 @@ Vue.use(axios)
 Vue.config.productionTip = false
 Vue.prototype.$ajax = axios
 Vue.prototype.$qs = qs
+//解决跨域，后台需要相应更改
 axios.defaults.withCredentials = true
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  data: {
+    quanju: 'quanju'
+  },
   router,
   components: { App },
   template: '<App/>'
