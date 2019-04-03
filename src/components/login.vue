@@ -2,8 +2,8 @@
   <div id="login">
     <div class="login">
         <label><h2>FederikBlog</h2></label>
-        <p><Input v-model="username" type="text" name="username" value="username" prefix="ios-contact" placeholder="Enter Username" style="width: auto" /></p>
-        <p><Input v-model="password" type="password" name="username" value="password" prefix="ios-lock" placeholder="Enter Password" style="width: auto" /></p>
+        <p><Input v-model.trim="username" type="text" name="username" value="username" prefix="ios-contact" placeholder="Enter Username" style="width: auto" /></p>
+        <p><Input v-model.trim="password" type="password" name="username" value="password" prefix="ios-lock" placeholder="Enter Password" style="width: auto" /></p>
         <p><Button @click="loginRequest" @keyup.enter="loginRequest" style="width:49%" type="success">Login</Button></p>
     </div>
   </div>
@@ -53,10 +53,10 @@ export default {
       )
       .then(function(res){
           console.log(res.data.resultCode);
-          if(res.data.resultCode == 93){
+          if(res.data.resultCode == 200){
             this.$router.push({path: '/home'})
           }
-          if(res.data.resultCode == 92){
+          if(res.data.resultCode == -100){
             this.$Message.info('用户名或密码错误');
           }
       }.bind(this))

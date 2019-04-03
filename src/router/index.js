@@ -34,10 +34,19 @@ export default new Router({
           }
         },
         {
-          path: '/home/articlelst/addarticle',
+          //router 隐藏携带参数
+          path: 'addArticle',
           name: 'addArticle',
           component: () => import('@/components/system/addarticle'),
           meta: {
+            requireAuth: true
+          }
+        },
+        {
+          path: 'updateArticle',
+          name: 'updateArticle',
+          component: () => import('@/components/system/addarticle'),
+          mete: {
             requireAuth: true
           }
         }

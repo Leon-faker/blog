@@ -1,7 +1,8 @@
 <template>
   <div id="addarticle">
     <template>
-        <Button @click="issue()" to="/home/articlelst/addarticle" icon="md-document" type="dashed">发布</Button>
+        <Button v-if="model==0"  @click="issue()"  icon="md-document" type="dashed">发布</Button>
+        <Button v-if="model==1"  @click="update()" icon="md-document" type="dashed">保存</Button>
     </template>
     <template>
       <br>
@@ -9,13 +10,13 @@
       <b>文章标题：</b>
       <Input v-model="articleTitle" placeholder="Enter Article Title" style="width: 300px" />
       <b>文章类型：</b>
-        <Select v-model="articleTypeModel" style="width:200px" placement="top">
-          <Option v-for="item in articleTypeLst" :value="item.articleTypeId" :key="item.articleTypeId">{{ item.articleTypeName }}</Option>
+        <Select v-model="articleTypeModel.articleTypeId" placeholder = "choose article type" style="width:200px" placement="top">
+          <Option v-for="item in articleTypeLst" :value="item.articleTypeId" v-bind:key="item.articleTypeId">{{ item.articleTypeName }}</Option>
         </Select>
       <b>可见状态：</b>
-      <i-switch size="large" v-model="status" @on-change = "statusChange">
-        <span slot="open">ON</span>
-        <span slot="close">OFF</span>
+      <i-switch size="large" v-model="status" @on-change = "statusChange" style="background-color:rgb(129,216,208);border-color:rgb(129,216,208)">
+        <span slot="open">开启</span>
+        <span slot="close">关闭</span>
       </i-switch>
     </template>
     <br>
@@ -35,20 +36,27 @@ export default {
   },
   mounted () {
     console.log("渲染前")
+    console.log(this.$route.params.articleId)
     this.articleTypeAjax()
   },
   data () {
     return {
+      // 0： 新增，1: 修改
+      model: this.$route.params.model,
+      //文章id
+      articleId: this.$route.params.articleId,
       //文章类型
       articleTypeLst: [],
-      //文章类型
-      articleTypeModel: '',
+      //文章类型 默认值
+      articleTypeModel: {
+          articleTypeId: this.$route.params.articleTypeId
+        },
       //文章标题
-      articleTitle: '',
+      articleTitle: this.$route.params.articleName,
       //文章内容
-      articleContent: '',
+      articleContent: this.$route.params.articleContent,
       //可见状态
-      status: false,
+      status: this.$route.params.articleStatus,
       tmpStatus: 0
     }
   },
@@ -85,17 +93,44 @@ export default {
     
     //发布文章
     issue () {
-      console.log(this.articleContent)
-      console.log(this.status)
-      console.log(this.tmpStatus)
+      // console.log(this.articleContent)
+      // console.log(this.status)
+      // console.log(this.tmpStatus)
       if(this.articleTitle==""){
         this.$Message.info('主题不能为空');
         return;
       }
       this.ajax()
     },
+    //文章修改请求
+    update(){
+      this.$ajax.post
+      (
+         'http://localhost:9000/article/updateStatus',
+         JSON.stringify({
+            articleId: this.articleId,
+            articleName: this.articleTitle,
+            articleStatus: this.status,
+            articleContent: this.articleContent
+         }),
+         {headers: {'Content-type': 'application/json;charset=UTF-8'}}
+      )
+      .then(function(res){
+          // console.log(res)
+          if(res.data.resultCode == 200){
+            this.$router.push({path: '/home/articlelst'})
+            this.$Message.info(res.data.strDescribe)
+          }
+          if(res.data.resultCode == -100){
+            this.$Message.info(res.data.strDescribe)
+          }
+      }.bind(this))
+      .catch(function(res){
+          this.$Message.info(res.data.strDescribe)
+      })
+    },
 
-    //发布请求
+    //文章发布请求
     ajax () {
       this.$ajax.post
       (
@@ -109,16 +144,17 @@ export default {
          {headers: {'Content-type': 'application/json;charset=UTF-8'}}
       )
       .then(function(res){
-          console.log(res)
-          if(res.data.data == true){
-            this.$Message.info("发布成功")
+          // console.log(res)
+          if(res.data.resultCode == 200){
+            this.$router.push({path: '/home/articlelst'})
+            this.$Message.info(res.data.strDescribe)
           }
-          if(res.data.data == false){
-            this.$Message.info("发布失败")
+          if(res.data.resultCode == -100){
+            this.$Message.info(res.data.strDescribe)
           }
       }.bind(this))
       .catch(function(res){
-          console.log(res)
+          this.$Message.info(res.data.strDescribe)
       })
     }
   }
