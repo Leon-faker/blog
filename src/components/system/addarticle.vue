@@ -1,5 +1,6 @@
 <template>
   <div id="addarticle">
+    {{this.$store.state.articleName}}
     <template>
         <Button v-if="model==0"  @click="issue()"  icon="md-document" type="dashed">发布</Button>
         <Button v-if="model==1"  @click="update()" icon="md-document" type="dashed">保存</Button>
@@ -35,8 +36,16 @@ export default {
     mavonEditor
   },
   mounted () {
-    console.log("渲染前")
-    console.log(this.$route.params.articleId)
+    //存储数据到vuex
+    console.log(this.$route.params.articleName)
+    this.$store.dispatch('changeAllValue',{
+      "model":this.$route.params.model,
+      "articleId":this.$route.params.articleId,
+      "articleName":this.$route.params.articleName,
+      "articleTypeId":this.$route.params.articleTypeId,
+      "articleStatus":this.$route.params.articleStatus,
+      "articleContent":this.$route.params.articleContent
+    })
     this.articleTypeAjax()
   },
   data () {
@@ -95,8 +104,8 @@ export default {
     issue () {
       // console.log(this.articleContent)
       // console.log(this.status)
-      // console.log(this.tmpStatus)
-      if(this.articleTitle==""){
+      console.log(this.articleTitle)
+      if(this.articleTitle=="" || this.articleTitle == undefined){
         this.$Message.info('主题不能为空');
         return;
       }
@@ -106,10 +115,11 @@ export default {
     update(){
       this.$ajax.post
       (
-         'http://localhost:9000/article/updateStatus',
+         'http://localhost:9000/article/updateArticle',
          JSON.stringify({
             articleId: this.articleId,
             articleName: this.articleTitle,
+            articleTypeId: this.articleTypeModel.articleTypeId,
             articleStatus: this.status,
             articleContent: this.articleContent
          }),
@@ -137,7 +147,7 @@ export default {
          'http://localhost:9000/article/addArticle',
          JSON.stringify({
             articleName: this.articleTitle,
-            articleTypeId: this.articleTypeModel,
+            articleTypeId: this.articleTypeModel.articleTypeId,
             articleStatus: this.tmpStatus,
             articleContent: this.articleContent
          }),

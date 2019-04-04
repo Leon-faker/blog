@@ -31,16 +31,17 @@
             <p v-if="row.articleTypeId == 4">Vue.js</p>
         </template>
         <template slot-scope="{ row, index }" slot="action">
-            <router-link :to='{name:"updateArticle", params:{
+           <!-- router-link 携带参数 -->
+            <!-- <router-link :to='{name:"updateArticle", params:{
                 model:1,
                 articleId: row.articleId,
                 articleName: row.articleName,
                 articleTypeId: row.articleTypeId,
                 articleStatus: row.articleStatus,
                 articleContent: row.articleContent,
-                 } }'>
-                <Button  size="small" style="margin-right: 5px" to=''>Edit</Button>
-            </router-link>
+                }}'>
+            </router-link> -->
+            <Button  size="small" @click="toUpdate(row)" style="margin-right: 5px" to=''>Edit</Button>
             <Button  size="small" @click="remove(index)">Delete</Button>
         </template>
     </Table>
@@ -163,11 +164,25 @@ export default {
             // this.data6.splice(index, 1);
             console.log(this.quanju)
         },
+        toUpdate: (row) => {
+            console.log(row)
+            //存储到localstorage
+            // this.$store.dispatch('changeAllValue',{
+            // "model":1,
+            // "articleId":row.articleTypeId,
+            // "articleName":row.articleName,
+            // "articleTypeId":row.articleTypeId,
+            // "articleStatus":row.articleStatus,
+            // "articleContent":row.articleContent
+            // })
+             this.$router.push({path: '/home/articlelst/updateArticle'})
+        },
         //更新可见状态
         updateStatus (row,value) {
+            row.articleStatus = value
             this.$ajax.post
             (
-                'http://localhost:9000/article/updateStatus',
+                'http://localhost:9000/article/updateArticle',
                 JSON.stringify({
                     articleId: row.articleId,//文章id
                     articleStatus: value?1:0//可见状态

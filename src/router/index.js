@@ -43,7 +43,7 @@ export default new Router({
           }
         },
         {
-          path: 'updateArticle',
+          path: '/home/articlelst/updateArticle',
           name: 'updateArticle',
           component: () => import('@/components/system/addarticle'),
           mete: {

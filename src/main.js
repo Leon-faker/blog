@@ -7,6 +7,7 @@ import iView from 'iview'
 import 'iview/dist/styles/iview.css'
 import axios from 'axios'
 import qs from 'qs'
+import store from './store/index'
 
 Vue.use(iView)
 Vue.use(axios)
@@ -19,10 +20,8 @@ axios.defaults.withCredentials = true
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  data: {
-    quanju: 'quanju'
-  },
   router,
+  store,
   components: { App },
   template: '<App/>'
 })
