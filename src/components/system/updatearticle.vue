@@ -1,7 +1,7 @@
 <template>
-  <div id="addarticle">
+  <div id="updatearticle">
     <template>
-        <Button @click="issue()"  icon="md-document" type="dashed">发布</Button>
+        <Button @click="update()" icon="md-document" type="dashed">保存</Button>
     </template>
     <template>
       <br>
@@ -29,7 +29,7 @@
 import {mavonEditor} from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 export default {
-  name: 'addArticle',
+  name: 'updateArticle',
   components: {
     mavonEditor
   },
@@ -39,20 +39,22 @@ export default {
   },
   data () {
     return {
+      // 0： 新增，1: 修改
+      model: parseInt(sessionStorage.getItem("model")),
       //文章id
-      articleId: 0,
+      articleId: parseInt(sessionStorage.getItem("articleId")),
       //文章类型
       articleTypeLst: [],
       //文章类型 默认值
       articleTypeModel: {
-          articleTypeId: 0,
+          articleTypeId: parseInt(sessionStorage.getItem("articleTypeId"))
         },
       //文章标题
-      articleTitle: '',
+      articleTitle: sessionStorage.getItem("articleName"),
       //文章内容
-      articleContent: '',
+      articleContent: sessionStorage.getItem("articleContent"),
       //可见状态
-      status: true,
+      status: eval(sessionStorage.getItem("articleStatus").toLowerCase()),
       tmpStatus: 0
     }
   },
@@ -70,11 +72,18 @@ export default {
     articleTypeAjax () {
       this.$ajax.post
       (
-         'http://localhost:9000/articleType/findAll',
+         this.$global.serverPath+'/articleType/findAll',
          JSON.stringify({
-           offset: 0,
-           limit: 10
+            offset: 0,
+             limit: 10
          }),
+         // 一下是get请求参数格式
+        //  {
+        //    params: {
+        //      offset: 0,
+        //      limit: 10
+        //    }
+        //  },
          {headers: {'Content-type': 'application/json;charset=UTF-8'}}
       )
       .then(function(res){
@@ -85,24 +94,16 @@ export default {
       })
     },
     
-    //发布文章
-    issue () {
-      if(this.articleTitle=="" || this.articleTitle == undefined){
-        this.$Message.info('主题不能为空');
-        return;
-      }
-      this.ajax()
-    },
-
-    //文章发布请求
-    ajax () {
+    //文章修改请求
+    update(){
       this.$ajax.post
       (
-         'http://localhost:9000/article/addArticle',
+         this.$global.serverPath+'/article/updateArticle',
          JSON.stringify({
+            articleId: this.articleId,
             articleName: this.articleTitle,
             articleTypeId: this.articleTypeModel.articleTypeId,
-            articleStatus: this.tmpStatus,
+            articleStatus: this.status,
             articleContent: this.articleContent
          }),
          {headers: {'Content-type': 'application/json;charset=UTF-8'}}
@@ -120,7 +121,8 @@ export default {
       .catch(function(res){
           this.$Message.info(res.data.strDescribe)
       })
-    }
+    },
+
   }
 }
 </script>

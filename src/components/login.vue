@@ -44,15 +44,14 @@ export default {
     ajax () {
       this.$ajax.post
       (
-         'http://localhost:9000/federik/loginuser',
+         this.$global.serverPath+'/federik/loginuser',
          JSON.stringify({
-            netUserName: this.username,
+            netUserUsername: this.username,
             netUserPassword: this.password
          }),
          {headers: {'Content-type': 'application/json;charset=UTF-8'}}
       )
       .then(function(res){
-          console.log(res.data.resultCode);
           if(res.data.resultCode == 200){
             this.$router.push({path: '/home'})
           }

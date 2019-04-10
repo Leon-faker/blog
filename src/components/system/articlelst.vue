@@ -30,7 +30,7 @@
             <p v-if="row.articleTypeId == 3">Spring</p>
             <p v-if="row.articleTypeId == 4">Vue.js</p>
         </template>
-        <template slot-scope="{ row, index }" slot="action">
+        <template slot-scope="{ row }" slot="action">
            <!-- router-link 携带参数 -->
             <!-- <router-link :to='{name:"updateArticle", params:{
                 model:1,
@@ -42,7 +42,7 @@
                 }}'>
             </router-link> -->
             <Button  size="small" @click="toUpdate(row)" style="margin-right: 5px" to=''>Edit</Button>
-            <Button  size="small" @click="remove(index)">Delete</Button>
+            <Button  size="small" @click="remove(row)">Delete</Button>
         </template>
     </Table>
     <br/>
@@ -55,6 +55,7 @@
 <script>
 export default {
     name: 'articlelst',
+    inject: ['reload'],
     mounted () {
         // console.log("渲染之前")
         this.beforeObtainArticleAjax()
@@ -160,29 +161,48 @@ export default {
     },
     methods: {
         //删除文章
-        remove (index) {
+        remove (row) {
             // this.data6.splice(index, 1);
             console.log(this.quanju)
+            this.$ajax.post
+            (
+                this.$global.serverPath+'/article/delArticle',
+                JSON.stringify({
+                    articleId: row.articleId
+                }),
+                {headers: {'Content-type': 'application/json;charset=UTF-8'}}
+            )
+            .then(function(res){
+                if(res.data.resultCode == 200){
+                   this.$Message.info(res.data.strDescribe);
+                }
+                if(res.data.resultCode == -100){
+                    this.$Message.info(res.data.strDescribe);
+                }
+                this.reload()
+            }.bind(this))
+            .catch(function(res){
+                this.$Message.info(res.data.strDescribe);
+            })
         },
-        toUpdate: (row) => {
-            console.log(row)
+        //这里方法用ES6语法来写的话，会提示 $router undefined
+        toUpdate (row) {
             //存储到localstorage
-            // this.$store.dispatch('changeAllValue',{
-            // "model":1,
-            // "articleId":row.articleTypeId,
-            // "articleName":row.articleName,
-            // "articleTypeId":row.articleTypeId,
-            // "articleStatus":row.articleStatus,
-            // "articleContent":row.articleContent
-            // })
-             this.$router.push({path: '/home/articlelst/updateArticle'})
+            this.$store.dispatch('changeAllValue',{
+            "articleId":row.articleId,
+            "articleName":row.articleName,
+            "articleTypeId":row.articleTypeId,
+            "articleStatus":row.articleStatus,
+            "articleContent":row.articleContent
+            })
+            this.$router.push({path: '/home/articlelst/updateArticle'})
         },
         //更新可见状态
         updateStatus (row,value) {
             row.articleStatus = value
             this.$ajax.post
             (
-                'http://localhost:9000/article/updateArticle',
+                this.$global.serverPath+'/article/updateArticle',
                 JSON.stringify({
                     articleId: row.articleId,//文章id
                     articleStatus: value?1:0//可见状态
@@ -203,15 +223,20 @@ export default {
         },
         //渲染之前，文章列表请求
         beforeObtainArticleAjax () {
-             this.$ajax.get
+             this.$ajax.post
             (
-                'http://localhost:9000/article/findArticlelst',
-                {
-                params: {
-                    offset: 0,
-                    limit: 10
-                }
-                },
+                this.$global.serverPath+'/article/findArticlelst',
+                //{
+                // get 请求参数格式
+                // params: {
+                //     offset: 0,
+                //     limit: 10
+                // }
+                //},
+                JSON.stringify({
+                    offset: 0,//文章id
+                    limit: 10//可见状态
+                }),
                 {headers: {'Content-type': 'application/json;charset=UTF-8'}}
             )
             .then(function(res){

@@ -45,7 +45,7 @@ export default new Router({
         {
           path: '/home/articlelst/updateArticle',
           name: 'updateArticle',
-          component: () => import('@/components/system/addarticle'),
+          component: () => import('@/components/system/updatearticle'),
           mete: {
             requireAuth: true
           }
