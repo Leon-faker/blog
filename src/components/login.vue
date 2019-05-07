@@ -10,6 +10,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'login',
   data () {
@@ -42,26 +43,23 @@ export default {
       }
     },
     ajax () {
-      this.$ajax.post
-      (
-         this.$global.serverPath+'/federik/loginuser',
-         JSON.stringify({
-            netUserUsername: this.username,
-            netUserPassword: this.password
-         }),
-         {headers: {'Content-type': 'application/json;charset=UTF-8'}}
-      )
-      .then(function(res){
-          if(res.data.resultCode == 200){
+      try{
+        let params = {
+          netUserUsername: this.username,
+          netUserPassword: this.password
+        }
+        let res = this.$api.unsplash.login(params)
+        .then(res => {
+          if(res.resultCode == 200){
             this.$router.push({path: '/home'})
           }
-          if(res.data.resultCode == -100){
-            this.$Message.info('用户名或密码错误');
+          if(res.resultCode == -100){
+            this.$Message.info(res.strDescribe);
           }
-      }.bind(this))
-      .catch(function(res){
-          console.log(res)
-      })
+        })
+      }catch (res){
+        this.$Message.info(res.strDescribe);
+      }
     }
   }
 }

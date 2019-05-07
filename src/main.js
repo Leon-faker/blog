@@ -9,7 +9,10 @@ import axios from 'axios'
 import qs from 'qs'
 import store from './store/index'
 import global from './global/global_properties'
+import api from './httpConfig/install'
 
+
+Vue.use(api)
 Vue.use(iView)
 // axios 并不是一个vue的插件，所以不能通过Vue.use 注册使用，应该通过设置Vue.prototype 原型链注册
 // Vue.use(axios)
