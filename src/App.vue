@@ -29,21 +29,17 @@ export default {
       })
     },
     checkLoginAxios(){
-      this.$ajax.post
-      (
-         'http://localhost:9000/federik/checkLogin',
-         null,
-         {headers: {'Content-type': 'application/json;charset=UTF-8'}}
-      )
-      .then(function(res){
-          if(res.data.resultCode == -100){
+      try {
+        let res = this.$api.unsplash.checkLoginStatus(null)
+        .then(res => {
+          if(res.resultCode == -100){
             this.$router.push({path: '/'})
             this.$Message.info("请登陆你的账号")
           }
-      }.bind(this))
-      .catch(function(res){
-          this.$Message.info(res.data.strDescribe)
-      })
+        })
+      } catch (res) {
+        this.$Message.info(res.data.strDescribe)
+      }
     }
   }
 }

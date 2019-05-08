@@ -1,6 +1,9 @@
 import axios from 'axios'
 import browser from '../common/browser'
 
+
+//解决跨域
+axios.defaults.withCredentials = true
 // 创建 axios 实例
 let http = axios.create({
   // headers: {'Content-Type': 'application/json'},

@@ -70,57 +70,68 @@ export default {
     },
     //文章类型请求
     articleTypeAjax () {
-      this.$ajax.post
-      (
-         this.$global.serverPath+'/articleType/findAll',
-         JSON.stringify({
+      try {
+        let res = this.$api.unsplash.findArticleType({
             offset: 0,
-             limit: 10
-         }),
-         // 一下是get请求参数格式
-        //  {
-        //    params: {
-        //      offset: 0,
-        //      limit: 10
-        //    }
-        //  },
-         {headers: {'Content-type': 'application/json;charset=UTF-8'}}
-      )
-      .then(function(res){
-          this.articleTypeLst = res.data.data
-      }.bind(this))
-      .catch(function(res){
-          console.log(res)
-      })
+            limit: 10
+        })
+        .then(res => {
+          this.articleTypeLst = res.data
+        })
+      } catch (res) {
+          this.$Message.info(res.strDescribe);
+      }
     },
     
     //文章修改请求
     update(){
-      this.$ajax.post
-      (
-         this.$global.serverPath+'/article/updateArticle',
-         JSON.stringify({
+      try {
+        let params = {
             articleId: this.articleId,
             articleName: this.articleTitle,
             articleTypeId: this.articleTypeModel.articleTypeId,
             articleStatus: this.status,
             articleContent: this.articleContent
-         }),
-         {headers: {'Content-type': 'application/json;charset=UTF-8'}}
-      )
-      .then(function(res){
-          // console.log(res)
-          if(res.data.resultCode == 200){
+        }
+        let res = this.$api.unsplash.updateArticle(params)
+        .then(res => {
+          if(res.resultCode == 200){
             this.$router.push({path: '/home/articlelst'})
-            this.$Message.info(res.data.strDescribe)
+            this.$Message.info(res.strDescribe)
           }
-          if(res.data.resultCode == -100){
-            this.$Message.info(res.data.strDescribe)
+          if(res.resultCode == -100){
+            this.$Message.info(res.strDescribe)
           }
-      }.bind(this))
-      .catch(function(res){
-          this.$Message.info(res.data.strDescribe)
-      })
+        })
+      } catch (res) {
+        this.$Message.info(res.strDescribe)
+      }
+      
+      // this.$ajax.post
+      // (
+      //    this.$global.serverPath+'/article/updateArticle',
+      //    JSON.stringify({
+      //       articleId: this.articleId,
+      //       articleName: this.articleTitle,
+      //       articleTypeId: this.articleTypeModel.articleTypeId,
+      //       articleStatus: this.status,
+      //       articleContent: this.articleContent
+      //    }),
+      //    {headers: {'Content-type': 'application/json;charset=UTF-8'}}
+      // )
+      // .then(function(res){
+      //     // console.log(res)
+      //     if(res.data.resultCode == 200){
+      //       this.$router.push({path: '/home/articlelst'})
+      //       this.$Message.info(res.data.strDescribe)
+      //     }
+      //     if(res.data.resultCode == -100){
+      //       this.$Message.info(res.data.strDescribe)
+      //     }
+      // }.bind(this))
+      // .catch(function(res){
+      //     this.$Message.info(res.data.strDescribe)
+      // })
     },
 
   }

@@ -163,27 +163,23 @@ export default {
         //删除文章
         remove (row) {
             // this.data6.splice(index, 1);
-            console.log(this.quanju)
-            this.$ajax.post
-            (
-                this.$global.serverPath+'/article/delArticle',
-                JSON.stringify({
+            try {
+                let params = {
                     articleId: row.articleId
-                }),
-                {headers: {'Content-type': 'application/json;charset=UTF-8'}}
-            )
-            .then(function(res){
-                if(res.data.resultCode == 200){
-                   this.$Message.info(res.data.strDescribe);
                 }
-                if(res.data.resultCode == -100){
-                    this.$Message.info(res.data.strDescribe);
-                }
-                this.reload()
-            }.bind(this))
-            .catch(function(res){
-                this.$Message.info(res.data.strDescribe);
-            })
+                let res = this.$api.unsplash.delArtilce(params)
+                .then(res => {
+                    if(res.resultCode == 200){
+                    this.$Message.info(res.strDescribe);
+                    }
+                    if(res.resultCode == -100){
+                        this.$Message.info(res.strDescribe);
+                    }
+                    this.reload()
+                })
+            } catch (res) {
+                 this.$Message.info(res.strDescribe);
+            }
         },
         //这里方法用ES6语法来写的话，会提示 $router undefined
         toUpdate (row) {
@@ -200,51 +196,37 @@ export default {
         //更新可见状态
         updateStatus (row,value) {
             row.articleStatus = value
-            this.$ajax.post
-            (
-                this.$global.serverPath+'/article/updateArticle',
-                JSON.stringify({
+            try {
+                let res = this.$api.unsplash.updateVisibleStatus({
                     articleId: row.articleId,//文章id
                     articleStatus: value?1:0//可见状态
-                }),
-                {headers: {'Content-type': 'application/json;charset=UTF-8'}}
-            )
-            .then(function(res){
-                if(res.data.resultCode == 200){
-                   this.$Message.info('更改可见状态成功');
-                }
-                if(res.data.resultCode == -100){
-                    this.$Message.info('更改可见状态失败');
-                }
-            }.bind(this))
-            .catch(function(res){
+                })
+                .then(res => {
+                    if(res.resultCode == 200){
+                        this.$Message.info('更改可见状态成功');
+                    }
+                    if(res.resultCode == -100){
+                        this.$Message.info('更改可见状态失败');
+                    }
+                })
+            } catch (res) {
                 this.$Message.info('更改可见状态失败');
-            })
+            }
         },
         //渲染之前，文章列表请求
         beforeObtainArticleAjax () {
-             this.$ajax.post
-            (
-                this.$global.serverPath+'/article/findArticlelst',
-                //{
-                // get 请求参数格式
-                // params: {
-                //     offset: 0,
-                //     limit: 10
-                // }
-                //},
-                JSON.stringify({
+            try {
+                let params = {
                     offset: 0,//文章id
                     limit: 10//可见状态
-                }),
-                {headers: {'Content-type': 'application/json;charset=UTF-8'}}
-            )
-            .then(function(res){
-                this.data = res.data.data
-            }.bind(this))
-            .catch(function(res){
-                console.log(res)
-            })
+                }
+                let res = this.$api.unsplash.articleList(params)
+                .then(res => {
+                    this.data = res.data
+                })
+            } catch (res) {
+                
+            }
         }
     }
 }

@@ -96,26 +96,23 @@ export default {
         },
         //删除文章类型
         remove (row) {
-            this.$ajax.post
-            (
-                this.$global.serverPath+'/articleType/removeArticleType',
-                JSON.stringify({
+            try {
+                let params = {
                     articleTypeId: row.articleTypeId//文章id
-                }),
-                {headers: {'Content-type': 'application/json;charset=UTF-8'}}
-            )
-            .then(function(res){
-                if(res.data.resultCode == 200){
-                    this.$Message.info(res.data.strDescribe);
-                    this.reload()
                 }
-                if(res.data.resultCode == -100){
-                    this.$Message.info(res.data.strDescribe);
-                }
-            }.bind(this))
-            .catch(function(res){
-                console.log(res)
-            })
+                let res = this.$api.unsplash.delArticleType(params)
+                .then(res => {
+                    if(res.resultCode == 200){
+                        this.$Message.info(res.strDescribe);
+                        this.reload()
+                    }
+                    if(res.resultCode == -100){
+                        this.$Message.info(res.strDescribe);
+                    }
+                })
+            } catch (res) {
+                
+            }
         },
         //保存文章类型
         save () {
@@ -126,75 +123,55 @@ export default {
                 // }, 2000)
                 return
             }
-            this.$ajax.post
-            (
-                this.$global.serverPath+'/articleType/addArticleType',
-                JSON.stringify({
+            try {
+                let params = {
                     articleTypeName: this.articleTypeName//文章id
-                }),
-                {headers: {'Content-type': 'application/json;charset=UTF-8'}}
-            )
-            .then(function(res){
-                if(res.data.resultCode == 200){
-                    this.reload()
-                    this.$Message.info(res.data.strDescribe);
-                    this.addDialog = false
                 }
-                if(res.data.resultCode == -100){
-                    this.$Message.info(res.data.strDescribe);
-                }
-            }.bind(this))
-            .catch(function(res){
-                console.log(res)
-            })
+                let res = this.$api.unsplash.addArticleType(params)
+                .then(res => {
+                    if(res.resultCode == 200){
+                        this.reload()
+                        this.$Message.info(res.strDescribe);
+                        this.addDialog = false
+                    }
+                    if(res.resultCode == -100){
+                        this.$Message.info(res.strDescribe);
+                    }
+                })
+            } catch (error) {
+                
+            }
         },
         //修改文章类型
         update () {
-            this.$ajax.post
-            (
-                this.$global.serverPath+'/articleType/updateArticleType',
-                JSON.stringify({
+            try {
+                let params = {
                     articleTypeId: this.articleTypeId,//文章id
                     articleTypeName: this.articleTypeName // 文章类型名称
-                }),
-                {headers: {'Content-type': 'application/json;charset=UTF-8'}}
-            )
-            .then(function(res){
-                if(res.data.resultCode == 200){
-                    this.reload()
-                    this.$Message.info(res.data.strDescribe);
                 }
-                if(res.data.resultCode == -100){
-                    this.$Message.info(res.data.strDescribe);
-                }
-            }.bind(this))
-            .catch(function(res){
-                console.log(res)
-            })
+                let res = this.$api.unsplash.updateArticlType(params)
+                .then(res => {
+                    if(res.resultCode == 200){
+                        this.reload()
+                        this.$Message.info(res.strDescribe);
+                    }
+                    if(res.resultCode == -100){
+                        this.$Message.info(res.strDescribe);
+                    }
+                })
+            } catch (res) {
+                this.$Message.info(res.strDescribe);
+            }
         },
         //渲染之前，文章列表请求
         beforeObtainArticleTypeAjax () {
-            this.$ajax.post
-            (
-                this.$global.serverPath+'/articleType/findAll',
-                //{
-                // get 请求参数格式
-                // params: {
-                //     offset: 0,
-                //     limit: 10
-                // }
-                //},
-                JSON.stringify({
-                    offset: 0,//文章id
-                    limit: 10//可见状态
-                }),
-                {headers: {'Content-type': 'application/json;charset=UTF-8'}}
-            )
-            .then(function(res){
-                this.data = res.data.data
-            }.bind(this))
-            .catch(function(res){
-                console.log(res)
+            let params = {
+                offset: 0,//文章id
+                limit: 10//可见状态
+            }
+            let res = this.$api.unsplash.articleTypeList(params)
+            .then(res => {
+                this.data = res.data
             })
         }
     }

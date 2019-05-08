@@ -68,21 +68,17 @@ export default {
     },
     //文章类型请求
     articleTypeAjax () {
-      this.$ajax.post
-      (
-         'http://localhost:9000/articleType/findAll',
-         JSON.stringify({
-           offset: 0,
-           limit: 10
-         }),
-         {headers: {'Content-type': 'application/json;charset=UTF-8'}}
-      )
-      .then(function(res){
-          this.articleTypeLst = res.data.data
-      }.bind(this))
-      .catch(function(res){
-          console.log(res)
-      })
+      try {
+        let res = this.$api.unsplash.findArticleType({
+            offset: 0,
+            limit: 10
+        })
+        .then(res => {
+          this.articleTypeLst = res.data
+        })
+      } catch (res) {
+          this.$Message.info(res.strDescribe);
+      }
     },
     
     //发布文章
@@ -96,30 +92,26 @@ export default {
 
     //文章发布请求
     ajax () {
-      this.$ajax.post
-      (
-         'http://localhost:9000/article/addArticle',
-         JSON.stringify({
-            articleName: this.articleTitle,
-            articleTypeId: this.articleTypeModel.articleTypeId,
-            articleStatus: this.tmpStatus,
-            articleContent: this.articleContent
-         }),
-         {headers: {'Content-type': 'application/json;charset=UTF-8'}}
-      )
-      .then(function(res){
-          // console.log(res)
-          if(res.data.resultCode == 200){
+      try{
+        let params = {
+          articleName: this.articleTitle,
+          articleTypeId: this.articleTypeModel.articleTypeId,
+          articleStatus: this.tmpStatus,
+          articleContent: this.articleContent
+        }
+        let res = this.$api.unsplash.addArticle(params)
+        .then(res => {
+          if(res.resultCode == 200){
             this.$router.push({path: '/home/articlelst'})
-            this.$Message.info(res.data.strDescribe)
+            this.$Message.info(res.strDescribe)
           }
-          if(res.data.resultCode == -100){
-            this.$Message.info(res.data.strDescribe)
+          if(res.resultCode == -100){
+            this.$Message.info(res.strDescribe)
           }
-      }.bind(this))
-      .catch(function(res){
-          this.$Message.info(res.data.strDescribe)
-      })
+        })
+      }catch (res){
+        this.$Message.info(res.strDescribe);
+      }
     }
   }
 }
