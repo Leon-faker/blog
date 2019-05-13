@@ -8,7 +8,6 @@ import 'iview/dist/styles/iview.css'
 // import axios from 'axios'
 // import qs from 'qs'
 import store from './store/index'
-import global from './global/global_properties'
 import api from './httpConfig/install'
 
 
