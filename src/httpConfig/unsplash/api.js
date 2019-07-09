@@ -1,5 +1,5 @@
- const baseUrl = 'http://118.25.155.229:9000' 
-// const baseUrl = 'http://localhost:9000'
+//  const baseUrl = 'http://118.25.155.229:9000' 
+const baseUrl = 'http://localhost:9000'
 
 
 export default {

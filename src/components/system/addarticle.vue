@@ -9,7 +9,7 @@
       <b>文章标题：</b>
       <Input v-model="articleTitle" placeholder="Enter Article Title" style="width: 300px" />
       <b>文章类型：</b>
-        <Select v-model="articleTypeModel.articleTypeId" placeholder = "choose article type" style="width:200px" placement="top">
+        <Select v-model="articleTypeModel.articleTypeId" :transfer="true" placeholder = "choose article type" style="width:200px" placement="top-end" >
           <Option v-for="item in articleTypeLst" :value="item.articleTypeId" v-bind:key="item.articleTypeId">{{ item.articleTypeName }}</Option>
         </Select>
       <b>可见状态：</b>
