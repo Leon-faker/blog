@@ -26,7 +26,6 @@ export default {
   methods: {
     keyupEnter(){
         document.onkeydown = e =>{
-            let body = document.getElementsByTagName('body')[0]
             if (e.keyCode === 13) {
                 this.loginRequest()
             }
@@ -52,6 +51,12 @@ export default {
         .then(res => {
           if(res.resultCode == 200){
             this.$router.push({path: '/home'})
+            //清除 回车绑定
+            document.onkeydown = e =>{
+                if (e.keyCode === 13) {
+                    
+                }
+            }
           }
           if(res.resultCode == -100){
             this.$Message.info(res.strDescribe);
